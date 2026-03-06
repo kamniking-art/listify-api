@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
-from typing import List
+from typing import List, Optional
 import secrets
+import os
 
 
 class Settings(BaseSettings):
@@ -9,14 +9,14 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "https://listify.app"]
-    DATABASE_URL: str = "postgresql+asyncpg://listify:listify@localhost:5432/listify"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://listify:listify@localhost:5432/listify")
     DB_POOL_SIZE: int = 10
     DB_MAX_OVERFLOW: int = 20
     SECRET_KEY: str = secrets.token_hex(32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
     S3_BUCKET: str = "listify-receipts"
@@ -31,10 +31,8 @@ class Settings(BaseSettings):
     APPLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_ID: str = ""
 
-    @field_validator("DATABASE_URL", mode="before")
-    @classmethod
-    def fix_database_url(cls, v: str) -> str:
-        if isinstance(v, str) and v.startswith("DATABASE_URL="):
-            v = v[len("DATABASE_URL="):]
+    class Config:
+        env_file = ".env"
+
 
 settings = Settings()
