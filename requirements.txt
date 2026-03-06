@@ -18,3 +18,4 @@ pytesseract==0.3.13
 rapidfuzz==3.10.0
 python-dateutil==2.9.0
 pytz==2024.2
+email-validator
