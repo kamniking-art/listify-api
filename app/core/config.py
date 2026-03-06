@@ -1,7 +1,14 @@
 from pydantic_settings import BaseSettings
-from typing import List, Optional
+from typing import List
 import secrets
 import os
+
+
+def clean_url(key: str, default: str) -> str:
+    val = os.getenv(key, default)
+    if val.startswith(key + "="):
+        val = val[len(key) + 1:]
+    return val
 
 
 class Settings(BaseSettings):
@@ -9,14 +16,14 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "https://listify.app"]
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://listify:listify@localhost:5432/listify")
+    DATABASE_URL: str = clean_url("DATABASE_URL", "postgresql+asyncpg://listify:listify@localhost:5432/listify")
     DB_POOL_SIZE: int = 10
     DB_MAX_OVERFLOW: int = 20
     SECRET_KEY: str = secrets.token_hex(32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
-    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    REDIS_URL: str = clean_url("REDIS_URL", "redis://localhost:6379/0")
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
     S3_BUCKET: str = "listify-receipts"
