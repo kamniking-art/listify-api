@@ -36,3 +36,5 @@ class Settings(BaseSettings):
     def fix_database_url(cls, v: str) -> str:
         if isinstance(v, str) and v.startswith("DATABASE_URL="):
             v = v[len("DATABASE_URL="):]
+
+settings = Settings()
