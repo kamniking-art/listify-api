@@ -20,3 +20,4 @@ python-dateutil==2.9.0
 pytz==2024.2
 email-validator
 psycopg2-binary
+asyncpg
