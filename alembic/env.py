@@ -8,7 +8,10 @@ from app.core.database import Base
 import app.models.user  # noqa: F401 — ensure models are imported
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+db_url = settings.DATABASE_URL
+if db_url.startswith("DATABASE_URL="):
+    db_url = db_url[len("DATABASE_URL="):]
+config.set_main_option("sqlalchemy.url", db_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
