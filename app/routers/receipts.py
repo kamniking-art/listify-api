@@ -45,7 +45,7 @@ async def upload_receipt(
         currency=user.currency,
     )
     db.add(receipt)
-    await db.flush()
+    await db.commit()
 
     # Kick off OCR in background
     from app.workers.tasks import process_receipt_task
@@ -140,7 +140,7 @@ async def confirm_receipt(
                 db.add(pp)
 
     receipt.status = "confirmed"
-    await db.flush()
+    await db.commit()
 
     return {"confirmed_count": len(shopping_item_ids)}
 
@@ -165,7 +165,7 @@ async def mark_all_bought(
     for item in items:
         item.status = "bought"
 
-    await db.flush()
+    await db.commit()
     return {"marked_count": len(items)}
 
 

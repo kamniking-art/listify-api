@@ -383,7 +383,7 @@ async def generate_autolist(
         accent_color="#6c63ff",
     )
     db.add(lst)
-    await db.flush()
+    await db.commit()
 
     # Placeholder — in prod: use ML model or frequency analysis
     auto_items = ["Молоко 1л", "Хлеб", "Яйца 10шт", "Гречка", "Масло сливочное"]
@@ -393,7 +393,7 @@ async def generate_autolist(
         )
         db.add(item)
 
-    await db.flush()
+    await db.commit()
     return {"list_id": lst.id, "items_count": len(auto_items)}
 
 

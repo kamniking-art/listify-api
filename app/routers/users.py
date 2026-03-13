@@ -43,7 +43,7 @@ async def register_push_token(
         )
         db.add(pt)
 
-    await db.flush()
+    await db.commit()
 
 
 @router.delete("/push-token", status_code=204)
@@ -59,4 +59,4 @@ async def unregister_push_token(
     pt = result.scalar_one_or_none()
     if pt:
         pt.is_active = False
-        await db.flush()
+        await db.commit()
