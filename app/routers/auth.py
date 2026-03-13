@@ -34,7 +34,7 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
         name=body.name,
     )
     db.add(user)
-    await db.flush()
+    await db.commit()
     return _token_response(user)
 
 
@@ -62,7 +62,7 @@ async def login_anonymous(body: AnonymousLoginRequest, db: AsyncSession = Depend
     if not user:
         user = User(device_id=body.device_id, is_anonymous=True)
         db.add(user)
-        await db.flush()
+        await db.commit()
 
     return _token_response(user)
 
