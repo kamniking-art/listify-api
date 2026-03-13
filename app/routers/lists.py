@@ -49,7 +49,7 @@ async def create_list(
         budget=body.budget,
     )
     db.add(lst)
-    await db.flush()
+    await db.commit()
     await db.refresh(lst)
     return lst
 
@@ -76,7 +76,7 @@ async def update_list(
     for field, value in body.model_dump(exclude_none=True).items():
         setattr(lst, field, value)
 
-    await db.flush()
+    await db.commit()
     await db.refresh(lst)
     return lst
 
@@ -141,7 +141,7 @@ async def add_item(
         added_by=user.name,
     )
     db.add(item)
-    await db.flush()
+    await db.commit()
     await db.refresh(item)
     return item
 
@@ -163,7 +163,7 @@ async def update_item(
     for field, value in data.items():
         setattr(item, field, value)
 
-    await db.flush()
+    await db.commit()
     await db.refresh(item)
     return item
 
@@ -179,7 +179,7 @@ async def update_item_status(
     await _get_list_or_404(db, list_id, user.id)
     item = await _get_item_or_404(db, item_id, list_id)
     item.status = body.status
-    await db.flush()
+    await db.commit()
     await db.refresh(item)
     return item
 
@@ -201,7 +201,7 @@ async def batch_update_status(
     items = result.scalars().all()
     for item in items:
         item.status = body.status
-    await db.flush()
+    await db.commit()
     return items
 
 
